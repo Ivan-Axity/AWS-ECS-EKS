@@ -1,10 +1,10 @@
 # Create an ECS cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "my-ecs-cluster"
+  name = "integration-ecs-cluster"
 }
 
 resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
-  name = "test1"
+  name = "esc_provider"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
@@ -34,7 +34,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   family             = "my-ecs-task"
   network_mode       = "awsvpc"
-  execution_role_arn = "arn:aws:iam::532199187081:role/ecsTaskExecutionRole"
+  execution_role_arn = aws_iam_role.ecs_execution_role.arn
   cpu                = 256
   runtime_platform {
     operating_system_family = "LINUX"
@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
         {
           containerPort = 80
           hostPort      = 80
-          protocol      = "tcp"
+          protocol      = "tcp"   
         }
       ]
     }
